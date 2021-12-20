@@ -176,7 +176,7 @@ HRESULT Elite::Renderer::InitialiseDirectX()
 	viewport.MaxDepth = 1.0f;
 	m_pDeviceContext->RSSetViewports(1, &viewport);
 
-	return result; // Return last successful result (we just need an output)
+	return S_OK;
 }
 
 

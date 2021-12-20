@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Effect.h" />
     <ClInclude Include="EMath.h" />
     <ClInclude Include="EMathUtilities.h" />
     <ClInclude Include="EMatrix.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="pch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ERenderer.cpp" />
     <ClCompile Include="ETimer.cpp" />
     <ClCompile Include="main.cpp" />
