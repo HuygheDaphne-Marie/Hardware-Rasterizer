@@ -7,6 +7,8 @@
 #ifndef ELITE_RAYTRACING_RENDERER
 #define	ELITE_RAYTRACING_RENDERER
 
+
+
 #include <cstdint>
 
 struct SDL_Window;
@@ -33,6 +35,10 @@ namespace Elite
 		uint32_t m_Height;
 
 		bool m_IsInitialized;
+
+		// DirectX Resources
+		ID3D11Device* m_pDevice;
+		ID3D11DeviceContext* m_pDeviceContext;
 	};
 }
 
