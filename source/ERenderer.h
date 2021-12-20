@@ -33,7 +33,8 @@ namespace Elite
 		SDL_Window* m_pWindow;
 		uint32_t m_Width;
 		uint32_t m_Height;
-
+		RGBColor m_ClearColor{0.f, 0.f, 0.3f};
+		
 		bool m_IsInitialized;
 
 		// DirectX Resources
@@ -41,6 +42,13 @@ namespace Elite
 		ID3D11DeviceContext* m_pDeviceContext;
 		IDXGIFactory* m_pDXGIFactory;
 		IDXGISwapChain* m_pSwapChain;
+		
+		ID3D11Texture2D* m_pDepthStencilBuffer;
+		ID3D11DepthStencilView* m_pDepthStencilView;
+		
+		ID3D11Texture2D* m_pRenderTargetBuffer;
+		ID3D11RenderTargetView* m_pRenderTargetView;
+
 
 		HRESULT InitialiseDirectX();
 	};
