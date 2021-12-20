@@ -39,6 +39,10 @@ namespace Elite
 		// DirectX Resources
 		ID3D11Device* m_pDevice;
 		ID3D11DeviceContext* m_pDeviceContext;
+		IDXGIFactory* m_pDXGIFactory;
+		IDXGISwapChain* m_pSwapChain;
+
+		HRESULT InitialiseDirectX();
 	};
 }
 
