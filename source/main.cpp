@@ -7,6 +7,10 @@
 //Project includes
 #include "ETimer.h"
 #include "ERenderer.h"
+#include "Vertex.h"
+#include <vector>
+
+using namespace Elite;
 
 void ShutDown(SDL_Window* pWindow)
 {
@@ -37,6 +41,19 @@ int main(int argc, char* args[])
 	//Initialize "framework"
 	auto pTimer{ std::make_unique<Elite::Timer>() };
 	auto pRenderer{ std::make_unique<Elite::Renderer>(pWindow) };
+
+	// Init Meshes
+	
+		const std::vector<IVertex> vertices
+		{
+			{FPoint3{0.f, .5f, .5f}, RGBColor{1.f, 0.f, 0.f}},
+			{FPoint3{.5f, -.5f, .5f}, RGBColor{0.f, 0.f, 1.f}},
+			{FPoint3{-.5f, -.5f, .5f}, RGBColor{0.f, 1.f, 0.f}}
+		};
+		const std::vector<uint32_t> indices{ 0, 1, 2 };
+
+		pRenderer->m_pMesh = new Mesh(pRenderer->GetDevice(), vertices, indices, L"Resources/PosCol3D.fx");
+	
 
 	//Start loop
 	pTimer->Start();

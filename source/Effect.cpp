@@ -27,11 +27,11 @@ Effect::~Effect()
 	m_pEffect->Release();
 }
 
-const ID3DX11Effect* Effect::GetEffect() const
+ID3DX11Effect* Effect::GetEffect() const
 {
 	return m_pEffect;
 }
-const ID3DX11EffectTechnique* Effect::GetTechnique() const
+ID3DX11EffectTechnique* Effect::GetTechnique() const
 {
 	return m_pTechnique;
 }
@@ -81,5 +81,7 @@ ID3DX11Effect* Effect::LoadEffect(ID3D11Device* pDevice, const std::wstring& pat
 		}
 	}
 
+	std::cout << "Effect loaded successfully\n";
+	
 	return pEffect;
 }

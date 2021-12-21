@@ -50,6 +50,8 @@ Elite::Renderer::~Renderer()
 
 	m_pDevice->Release();
 	m_pDXGIFactory->Release();
+
+	delete m_pMesh;
 }
 
 void Elite::Renderer::Render()
@@ -62,9 +64,15 @@ void Elite::Renderer::Render()
 	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	// Render
+	m_pMesh->Render(m_pDeviceContext);
 
 	// Present
 	m_pSwapChain->Present(0, 0);
+}
+
+ID3D11Device* Elite::Renderer::GetDevice() const
+{
+	return m_pDevice;
 }
 
 HRESULT Elite::Renderer::InitialiseDirectX()

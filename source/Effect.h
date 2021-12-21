@@ -9,8 +9,8 @@ public:
 	Effect operator=(Effect&& other) = delete;
 	~Effect();
 
-	const ID3DX11Effect* GetEffect() const;
-	const ID3DX11EffectTechnique* GetTechnique() const;
+	ID3DX11Effect* GetEffect() const;
+	ID3DX11EffectTechnique* GetTechnique() const;
 
 private:
 	ID3DX11Effect* m_pEffect;

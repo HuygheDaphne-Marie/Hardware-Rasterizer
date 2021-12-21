@@ -14,6 +14,9 @@
     <Filter Include="Shaders">
       <UniqueIdentifier>{524d738d-64d1-4bb1-b418-17067d1bc1c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Geometry">
+      <UniqueIdentifier>{c4876ad9-d7e6-4637-9f87-2a91b75ae1d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EMath.h">
@@ -71,6 +74,12 @@
     <ClInclude Include="Effect.h">
       <Filter>Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="Vertex.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
+    <ClInclude Include="Mesh.h">
+      <Filter>Geometry</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ERenderer.cpp">
@@ -83,6 +92,9 @@
     <ClCompile Include="pch.cpp" />
     <ClCompile Include="Effect.cpp">
       <Filter>Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="Mesh.cpp">
+      <Filter>Geometry</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

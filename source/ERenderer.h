@@ -7,7 +7,7 @@
 #ifndef ELITE_RAYTRACING_RENDERER
 #define	ELITE_RAYTRACING_RENDERER
 
-
+#include "Mesh.h" // Todo: temp, make scene with meshes
 
 #include <cstdint>
 
@@ -29,6 +29,10 @@ namespace Elite
 
 		void Render();
 
+		Mesh* m_pMesh = nullptr; // Todo: temp
+
+		ID3D11Device* GetDevice() const;
+
 	private:
 		SDL_Window* m_pWindow;
 		uint32_t m_Width;
@@ -48,7 +52,6 @@ namespace Elite
 		
 		ID3D11Texture2D* m_pRenderTargetBuffer;
 		ID3D11RenderTargetView* m_pRenderTargetView;
-
 
 		HRESULT InitialiseDirectX();
 	};
