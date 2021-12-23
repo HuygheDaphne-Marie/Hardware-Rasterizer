@@ -9,6 +9,7 @@
 #include "ERenderer.h"
 #include "Vertex.h"
 #include <vector>
+#include "SceneManager.h"
 
 using namespace Elite;
 
@@ -41,18 +42,27 @@ int main(int argc, char* args[])
 	//Initialize "framework"
 	auto pTimer{ std::make_unique<Elite::Timer>() };
 	auto pRenderer{ std::make_unique<Elite::Renderer>(pWindow) };
+	SceneManager& sceneManager{ SceneManager::GetInstance() };
 
 	// Init Meshes
-	
+	SceneGraph& activeScene = sceneManager.GetActiveScene();
+	activeScene.SetCamera(new Camera(width, height));
+	{
 		const std::vector<IVertex> vertices
 		{
-			{FPoint3{0.f, .5f, .5f}, RGBColor{1.f, 0.f, 0.f}},
-			{FPoint3{.5f, -.5f, .5f}, RGBColor{0.f, 0.f, 1.f}},
-			{FPoint3{-.5f, -.5f, .5f}, RGBColor{0.f, 1.f, 0.f}}
+			//{FPoint3{0.f, 3.f, 2.f}, RGBColor{1.f, 0.f, 0.f}},
+			//{FPoint3{3.f, -3.f, 2.f}, RGBColor{0.f, 0.f, 1.f}},
+			//{FPoint3{-3.f, -3.f, 2.f}, RGBColor{0.f, 1.f, 0.f}}
+			{FPoint3{0.f, 0.5f, 0.5f}, RGBColor{1.f, 0.f, 0.f}},
+			{FPoint3{0.5f, -0.5f, 0.5f}, RGBColor{0.f, 0.f, 1.f}},
+			{FPoint3{-0.5f, -0.5f, 0.5f}, RGBColor{0.f, 1.f, 0.f}}
 		};
 		const std::vector<uint32_t> indices{ 0, 1, 2 };
+		
+		activeScene.AddGeometryToScene(new Mesh(pRenderer->GetDevice(), vertices, indices, L"Resources/PosCol3D.fx"));
+	}
+	
 
-		pRenderer->m_pMesh = new Mesh(pRenderer->GetDevice(), vertices, indices, L"Resources/PosCol3D.fx");
 	
 
 	//Start loop
@@ -75,6 +85,9 @@ int main(int argc, char* args[])
 				break;
 			}
 		}
+
+		// Update
+		activeScene.GetCamera()->Update(pTimer->GetElapsed());
 
 		//--------- Render ---------
 		pRenderer->Render();

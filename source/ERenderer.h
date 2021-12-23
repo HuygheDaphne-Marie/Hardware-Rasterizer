@@ -7,8 +7,6 @@
 #ifndef ELITE_RAYTRACING_RENDERER
 #define	ELITE_RAYTRACING_RENDERER
 
-#include "Mesh.h" // Todo: temp, make scene with meshes
-
 #include <cstdint>
 
 struct SDL_Window;
@@ -28,8 +26,6 @@ namespace Elite
 		Renderer& operator=(Renderer&&) noexcept = delete;
 
 		void Render();
-
-		Mesh* m_pMesh = nullptr; // Todo: temp
 
 		ID3D11Device* GetDevice() const;
 

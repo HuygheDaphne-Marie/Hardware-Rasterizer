@@ -2,6 +2,7 @@
 #include <vector>
 #include "Vertex.h"
 #include "Effect.h"
+#include "ECamera.h"
 
 class Mesh
 {
@@ -13,7 +14,7 @@ public:
 	Mesh operator=(Mesh&& other) = delete;
 	~Mesh();
 
-	void Render(ID3D11DeviceContext* pDeviceContext) const;
+	void Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera);
 
 private:
 	Effect m_Effect;
@@ -23,5 +24,6 @@ private:
 
 	uint32_t m_AmountIndices;
 	ID3D11Buffer* m_pIndexBuffer;
+	ID3DX11EffectMatrixVariable* m_pMatWorldViewProjVariable;
 };
 

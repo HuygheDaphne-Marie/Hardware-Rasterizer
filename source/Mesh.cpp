@@ -1,8 +1,6 @@
 #include "pch.h"
 #include "Mesh.h"
 
-
-
 Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const std::vector<unsigned int>& indices, const std::wstring& effectPath)
 	: m_Effect(pDevice, effectPath)
 {	
@@ -65,14 +63,14 @@ Mesh::~Mesh()
 	m_pVertexBuffer->Release();
 }
 
-void Mesh::Render(ID3D11DeviceContext* pDeviceContext) const
+void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
 {
 	// Set vertex buffer
 	UINT stride = sizeof(IVertex);
 	UINT offset = 0;
 	pDeviceContext->IASetVertexBuffers(0, 1, &m_pVertexBuffer, &stride, &offset);
 	
-	// set index buffer
+	// Set index buffer
 	pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
 	// Set input layout
@@ -80,6 +78,19 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext) const
 
 	// Set primitive topology
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+
+	// Set WorldViewProjection matrix
+	m_pMatWorldViewProjVariable = m_Effect.GetEffect()->GetVariableByName("gWorldViewProj")->AsMatrix();
+	if (!m_pMatWorldViewProjVariable->IsValid())
+	{
+		std::cout << "m_pMatWorldViewProjVariable is not valid\n";
+		return;
+	}
+
+	// Set matrix if it's valid
+	const Elite::FMatrix4 worldViewProjection{ pCamera->GetWorldToView() * pCamera->GetProjection() };
+	m_pMatWorldViewProjVariable->SetMatrix(*worldViewProjection.data);
+
 
 	// Render a triangle
 	D3DX11_TECHNIQUE_DESC techDesc;

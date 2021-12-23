@@ -9,6 +9,11 @@
 #include <d3dcompiler.h>
 #include <d3dx11effect.h>
 
+//#include "Mesh.h"
+//#include "ECamera.h"
+
+#include "SceneManager.h"
+
 Elite::Renderer::Renderer(SDL_Window * pWindow)
 	: m_pWindow{ pWindow }
 	, m_Width{}
@@ -50,8 +55,6 @@ Elite::Renderer::~Renderer()
 
 	m_pDevice->Release();
 	m_pDXGIFactory->Release();
-
-	delete m_pMesh;
 }
 
 void Elite::Renderer::Render()
@@ -64,7 +67,10 @@ void Elite::Renderer::Render()
 	m_pDeviceContext->ClearDepthStencilView(m_pDepthStencilView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.0f, 0);
 
 	// Render
-	m_pMesh->Render(m_pDeviceContext);
+	for (Mesh* mesh : SceneManager::GetInstance().GetActiveScene().GetGeometries())
+	{
+		mesh->Render(m_pDeviceContext, SceneManager::GetInstance().GetActiveScene().GetCamera());
+	}
 
 	// Present
 	m_pSwapChain->Present(0, 0);

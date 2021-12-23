@@ -1,3 +1,4 @@
+#include "pch.h"
 #include "ECamera.h"
 #include <SDL.h>
 
@@ -7,7 +8,7 @@ namespace Elite
 		m_Width(screenWidth),
 		m_Height(screenHeight),
 		m_AspectRatio{ static_cast<float>(screenWidth) / static_cast<float>(screenHeight) },
-		m_Fov(tanf((fovAngle* static_cast<float>(E_TO_RADIANS)) / 2.f)),
+		m_Fov(tanf((fovAngle * static_cast<float>(E_TO_RADIANS)) / 2.f)),
 		m_Position{ position },
 		m_ViewForward{GetNormalized(-viewForward)},
 		m_NearClipPlane(near),
@@ -58,6 +59,10 @@ namespace Elite
 		FMatrix3 yawRotation = MakeRotationY(m_AbsoluteRotation.y * float(E_TO_RADIANS));
 		FVector3 zAxis = yawRotation * m_ViewForward;
 
+		// Todo: temp forward correction
+		zAxis.x = -zAxis.x;
+		zAxis.y = -zAxis.y;
+
 		//Calculate RIGHT (xAxis) based on transformed FORWARD
 		FVector3 xAxis = GetNormalized(Cross(FVector3{ 0.f,1.f,0.f }, zAxis));
 
@@ -79,7 +84,7 @@ namespace Elite
 			FVector4{xAxis},
 			FVector4{yAxis},
 			FVector4{zAxis},
-			FVector4{m_Position.x,m_Position.y,m_Position.z,1.f}
+			FVector4{m_Position.x,m_Position.y,-m_Position.z,1.f}
 		};
 
 		//Construct World2View Matrix
@@ -91,9 +96,10 @@ namespace Elite
 		m_Projection = FMatrix4::Identity();
 		m_Projection.data[0][0] = 1.f / (GetAspectRatio() * GetFov());
 		m_Projection.data[1][1] = 1.f / GetFov();
-		m_Projection.data[2][2] = m_FarClipPlane / (m_NearClipPlane - m_FarClipPlane);
-		m_Projection.data[2][3] = -1.f;
-		m_Projection.data[3][2] = (m_FarClipPlane * m_NearClipPlane) / (m_NearClipPlane - m_FarClipPlane);
+		m_Projection.data[2][2] = m_FarClipPlane / (m_FarClipPlane - m_NearClipPlane);
+		m_Projection.data[2][3] = 1.f;
+		m_Projection.data[3][2] = -(m_FarClipPlane * m_NearClipPlane) / (m_FarClipPlane - m_NearClipPlane);
 		m_Projection.data[3][3] = 0.f;
 	}
 }
+ 

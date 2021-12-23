@@ -17,6 +17,12 @@
     <Filter Include="Geometry">
       <UniqueIdentifier>{c4876ad9-d7e6-4637-9f87-2a91b75ae1d3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{bb806adf-b065-4aaf-a673-eaac0047a624}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{cac291df-e288-433f-a161-997b33d75afa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EMath.h">
@@ -80,7 +86,18 @@
     <ClInclude Include="Mesh.h">
       <Filter>Geometry</Filter>
     </ClInclude>
-    <ClInclude Include="ECamera.h" />
+    <ClInclude Include="ECamera.h">
+      <Filter>Camera</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneGraph.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="Singleton.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ERenderer.cpp">
@@ -98,7 +115,13 @@
       <Filter>Geometry</Filter>
     </ClCompile>
     <ClCompile Include="ECamera.cpp">
-      <Filter>Math</Filter>
+      <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneGraph.cpp">
+      <Filter>Scene</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
