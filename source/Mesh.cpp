@@ -8,7 +8,7 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 {	
 	// Create vertex layout
 	HRESULT result = S_OK;
-	static const uint32_t numElements{ 2 };
+	static constexpr uint32_t numElements{ 2 };
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[numElements]{};
 
 	vertexDesc[0].SemanticName = "POSITION";
@@ -75,11 +75,14 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext) const
 	// set index buffer
 	pDeviceContext->IASetIndexBuffer(m_pIndexBuffer, DXGI_FORMAT_R32_UINT, 0);
 
+	// Set input layout
+	pDeviceContext->IASetInputLayout(m_pVertexLayout);
+
 	// Set primitive topology
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Render a triangle
-	D3DX11_TECHNIQUE_DESC techDesc{};
+	D3DX11_TECHNIQUE_DESC techDesc;
 	m_Effect.GetTechnique()->GetDesc(&techDesc);
 	for (UINT passIndex = 0; passIndex < techDesc.Passes; ++passIndex)
 	{
