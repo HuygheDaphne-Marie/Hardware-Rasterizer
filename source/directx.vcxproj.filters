@@ -80,6 +80,7 @@
     <ClInclude Include="Mesh.h">
       <Filter>Geometry</Filter>
     </ClInclude>
+    <ClInclude Include="ECamera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ERenderer.cpp">
@@ -95,6 +96,9 @@
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Geometry</Filter>
+    </ClCompile>
+    <ClCompile Include="ECamera.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

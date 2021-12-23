@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ECamera.h" />
     <ClInclude Include="Effect.h" />
     <ClInclude Include="EMath.h" />
     <ClInclude Include="EMathUtilities.h" />
@@ -99,6 +100,7 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ECamera.cpp" />
     <ClCompile Include="Effect.cpp" />
     <ClCompile Include="ERenderer.cpp" />
     <ClCompile Include="ETimer.cpp" />
