@@ -88,8 +88,15 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
 	}
 
 	// Set matrix if it's valid
-	const Elite::FMatrix4 worldViewProjection{ pCamera->GetWorldToView() * pCamera->GetProjection() };
-	m_pMatWorldViewProjVariable->SetMatrix(*worldViewProjection.data);
+	const auto proj = pCamera->GetProjection();
+	const auto worldView = pCamera->GetWorldToView();
+	const Elite::FMatrix4 worldViewProjection{ pCamera->GetProjection()* pCamera->GetWorldToView() };
+	const HRESULT res = m_pMatWorldViewProjVariable->SetMatrix(*worldViewProjection.data);
+	if (FAILED(res))
+	{
+		std::cout << "Issue setting matrix\n";
+		return;
+	}
 
 
 	// Render a triangle
