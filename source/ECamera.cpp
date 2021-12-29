@@ -25,14 +25,14 @@ namespace Elite
 		//*************
 		//Keyboard Input
 		const uint8_t* pKeyboardState = SDL_GetKeyboardState(0);
-		float keyboardSpeed = pKeyboardState[SDL_SCANCODE_LSHIFT] ? m_KeyboardMoveSensitivity * m_KeyboardMoveMultiplier : m_KeyboardMoveSensitivity;
+		const float keyboardSpeed = pKeyboardState[SDL_SCANCODE_LSHIFT] ? m_KeyboardMoveSensitivity * m_KeyboardMoveMultiplier : m_KeyboardMoveSensitivity;
 		m_RelativeTranslation.x = (pKeyboardState[SDL_SCANCODE_D] - pKeyboardState[SDL_SCANCODE_A]) * keyboardSpeed * elapsedSec;
 		m_RelativeTranslation.y = 0;
 		m_RelativeTranslation.z = (pKeyboardState[SDL_SCANCODE_S] - pKeyboardState[SDL_SCANCODE_W]) * keyboardSpeed * elapsedSec;
 
 		//Mouse Input
 		int x, y = 0;
-		uint32_t mouseState = SDL_GetRelativeMouseState(&x, &y);
+		const uint32_t mouseState = SDL_GetRelativeMouseState(&x, &y);
 		if (mouseState == SDL_BUTTON_LMASK)
 		{
 			m_RelativeTranslation.z += y * m_MouseMoveSensitivity * elapsedSec;
@@ -57,6 +57,7 @@ namespace Elite
 
 	void Camera::CalculateLookAt()
 	{
+		// Kept in case of disaster, this worked fine for camera movement
 		////FORWARD (zAxis) with YAW applied
 		//FMatrix3 yawRotation = MakeRotationY(m_AbsoluteRotation.y * static_cast<float>(E_TO_RADIANS));
 		//FVector3 zAxis = yawRotation * m_ViewForward;
@@ -84,14 +85,14 @@ namespace Elite
 		FVector3 zAxis = yawRotation * m_ViewForward;
 		
 		//Calculate RIGHT (xAxis) based on transformed FORWARD
-		FVector3 xAxis = GetNormalized(Cross(FVector3{ 0.f,1.f,0.f }, zAxis));
+		const FVector3 xAxis = GetNormalized(Cross(FVector3{ 0.f,1.f,0.f }, zAxis));
 		
 		//FORWARD with PITCH applied (based on xAxis)
 		FMatrix3 pitchRotation = MakeRotation(m_AbsoluteRotation.x * static_cast<float>(E_TO_RADIANS), xAxis);
 		zAxis = pitchRotation * zAxis;
 		
 		//Calculate UP (yAxis)
-		FVector3 yAxis = Cross(zAxis, xAxis);
+		const FVector3 yAxis = Cross(zAxis, xAxis);
 		
 		//Translate based on transformed axis
 		m_Position += m_RelativeTranslation.x * xAxis;
@@ -120,7 +121,8 @@ namespace Elite
 		m_Projection.data[2][3] = 1.f;
 		m_Projection.data[3][2] = -(m_FarClipPlane * m_NearClipPlane) / (m_FarClipPlane - m_NearClipPlane);
 		m_Projection.data[3][3] = 0.f;
-		
+
+		// Alternate method
 		//m_Projection =
 		//{
 		//	1 / (GetAspectRatio() * GetFov()), 0.f, 0.f, 0.f,
