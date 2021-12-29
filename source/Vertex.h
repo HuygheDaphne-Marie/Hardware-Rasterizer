@@ -5,6 +5,7 @@
 struct IVertex
 {
 	Elite::FPoint3 position;
+	Elite::FPoint2 uv;
 	Elite::RGBColor color;
 };
 

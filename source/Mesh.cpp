@@ -6,7 +6,7 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 {	
 	// Create vertex layout
 	HRESULT result = S_OK;
-	static constexpr uint32_t numElements{ 2 };
+	static constexpr uint32_t numElements{ 3 };
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[numElements]{};
 
 	vertexDesc[0].SemanticName = "POSITION";
@@ -14,10 +14,15 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 	vertexDesc[0].AlignedByteOffset = 0;
 	vertexDesc[0].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[1].SemanticName = "COLOR";
-	vertexDesc[1].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[1].SemanticName = "TEXCOORD";
+	vertexDesc[1].Format = DXGI_FORMAT_R32G32_FLOAT;
 	vertexDesc[1].AlignedByteOffset = 12;
 	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+
+	vertexDesc[2].SemanticName = "COLOR";
+	vertexDesc[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[2].AlignedByteOffset = 20;
+	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC bd{};
@@ -27,7 +32,7 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 	bd.CPUAccessFlags = 0;
 	bd.MiscFlags = 0;
 
-	D3D11_SUBRESOURCE_DATA initData{0};
+	D3D11_SUBRESOURCE_DATA initData{nullptr};
 	initData.pSysMem = vertices.data();
 
 	result = pDevice->CreateBuffer(&bd, &initData, &m_pVertexBuffer);

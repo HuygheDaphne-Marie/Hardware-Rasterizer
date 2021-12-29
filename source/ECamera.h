@@ -18,7 +18,7 @@ namespace Elite
 		(
 			const int screenWidth, 
 			const int screenHeight, 
-			const FPoint3& position = { 0.f, 0.f, 0.f }, 
+			const FPoint3& position = { 0.f, 0.f, -10.f }, 
 			const FVector3& viewForward = { 0.f, 0.f, 1.f }, 
 			float fovAngle = 60.f, 
 			float nearClip = 0.1f, 
