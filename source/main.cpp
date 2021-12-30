@@ -51,10 +51,10 @@ int main(int argc, char* args[])
 	{
 		const std::vector<IVertex> vertices // quad
 		{
-			{FPoint3{-3.f, 3.f, 2.f}, FPoint2{0,0}, RGBColor{1.f, 0.f, 0.f}},
-			{FPoint3{3.f, 3.f, 2.f}, FPoint2{1,0}, RGBColor{0.f, 0.f, 1.f}},
-			{FPoint3{-3.f, -3.f, 2.f}, FPoint2{0,1}, RGBColor{0.f, 1.f, 0.f}},
-			{FPoint3{3.f, -3.f, 2.f}, FPoint2{1,1}, RGBColor{0.f, 1.f, 1.f}}
+			{FPoint3{-3.f, 3.f, 2.f}, FPoint2{0,0}, RGBColor{1.f, 1.f, 1.f}},
+			{FPoint3{3.f, 3.f, 2.f}, FPoint2{1,0}, RGBColor{1.f, 1.f, 1.f}},
+			{FPoint3{-3.f, -3.f, 2.f}, FPoint2{0,1}, RGBColor{1.f, 1.f, 1.f}},
+			{FPoint3{3.f, -3.f, 2.f}, FPoint2{1,1}, RGBColor{1.f, 1.f, 1.f}}
 		};
 		const std::vector<uint32_t> indices{ 0, 1, 2, 2, 1, 3 };
 
