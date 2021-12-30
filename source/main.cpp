@@ -10,6 +10,7 @@
 #include "Vertex.h"
 #include <vector>
 #include "SceneManager.h"
+#include "Texture.h"
 
 using namespace Elite;
 
@@ -56,8 +57,10 @@ int main(int argc, char* args[])
 			{FPoint3{3.f, -3.f, 2.f}, FPoint2{1,1}, RGBColor{0.f, 1.f, 1.f}}
 		};
 		const std::vector<uint32_t> indices{ 0, 1, 2, 2, 1, 3 };
-		
-		activeScene.AddGeometryToScene(new Mesh(pRenderer->GetDevice(), vertices, indices, L"Resources/PosCol3D.fx"));
+
+		Mesh* pQuad = new Mesh(pRenderer->GetDevice(), vertices, indices, L"Resources/PosCol3D.fx");
+		pQuad->SetDiffuseTexture(new Texture("Resources/uv_grid_2.png", pRenderer->GetDevice()));
+		activeScene.AddGeometryToScene(pQuad);
 	}
 	
 	//Start loop

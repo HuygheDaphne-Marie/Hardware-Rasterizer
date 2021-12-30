@@ -5,6 +5,11 @@ Texture::Texture(const std::string& path, ID3D11Device* pDevice)
 {
 	// Load texture with SDL
 	SDL_Surface* pSurface = IMG_Load(path.c_str());
+	if (pSurface == nullptr)
+	{
+		std::cout << "Error creating SDL_Surface with path: " << path << std::endl;
+		return;
+	}
 
 	// Make texture description
 	D3D11_TEXTURE2D_DESC desc{};
@@ -49,8 +54,11 @@ Texture::Texture(const std::string& path, ID3D11Device* pDevice)
 
 Texture::~Texture()
 {
-	m_pTextureResourceView->Release();
-	m_pTexture->Release();
+	if (m_pTextureResourceView != nullptr)
+		m_pTextureResourceView->Release();
+
+	if (m_pTexture != nullptr)
+		m_pTexture->Release();
 }
 
 ID3D11ShaderResourceView* Texture::GetTextureResourceView() const

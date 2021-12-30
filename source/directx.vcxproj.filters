@@ -101,7 +101,9 @@
     <ClInclude Include="Singleton.h">
       <Filter>Scene</Filter>
     </ClInclude>
-    <ClInclude Include="Texture.h" />
+    <ClInclude Include="Texture.h">
+      <Filter>Textures</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ERenderer.cpp">
@@ -128,7 +130,7 @@
       <Filter>Scene</Filter>
     </ClCompile>
     <ClCompile Include="Texture.cpp">
-      <Filter>Math</Filter>
+      <Filter>Textures</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

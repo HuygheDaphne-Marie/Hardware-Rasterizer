@@ -66,6 +66,8 @@ Mesh::~Mesh()
 	m_pIndexBuffer->Release();
 	m_pVertexLayout->Release();
 	m_pVertexBuffer->Release();
+
+	delete m_pDiffuse; // Todo: textureManager, if need be
 }
 
 void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
@@ -84,23 +86,41 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
 	// Set primitive topology
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Set WorldViewProjection matrix
-	m_pMatWorldViewProjVariable = m_Effect.GetEffect()->GetVariableByName("gWorldViewProj")->AsMatrix();
-	if (!m_pMatWorldViewProjVariable->IsValid())
+	// Matrix
 	{
-		std::cout << "m_pMatWorldViewProjVariable is not valid\n";
-		return;
+		// Set WorldViewProjection matrix
+		m_pMatWorldViewProjVariable = m_Effect.GetEffect()->GetVariableByName("gWorldViewProj")->AsMatrix();
+		if (!m_pMatWorldViewProjVariable->IsValid())
+		{
+			std::cout << "m_pMatWorldViewProjVariable is not valid\n";
+			return;
+		}
+
+		// Set matrix if it's valid
+		const Elite::FMatrix4 worldViewProjection{ pCamera->GetProjection() * pCamera->GetWorldToView() };
+		const HRESULT res = m_pMatWorldViewProjVariable->SetMatrix(*worldViewProjection.data);
+		if (FAILED(res))
+		{
+			std::cout << "Issue setting matrix\n";
+			return;
+		}
 	}
 
-	// Set matrix if it's valid
-	const auto proj = pCamera->GetProjection();
-	const auto worldView = pCamera->GetWorldToView();
-	const Elite::FMatrix4 worldViewProjection{ pCamera->GetProjection()* pCamera->GetWorldToView() };
-	const HRESULT res = m_pMatWorldViewProjVariable->SetMatrix(*worldViewProjection.data);
-	if (FAILED(res))
+	// Diffuse
 	{
-		std::cout << "Issue setting matrix\n";
-		return;
+		// Get the shader diffuse map variable
+		m_pDiffuseMapVariable = m_Effect.GetEffect()->GetVariableByName("gDiffuseMap")->AsShaderResource();
+		if (!m_pDiffuseMapVariable->IsValid())
+		{
+			std::cout << "m_pDiffuseMapVariable is not valid\n";
+			return;
+		}
+
+		// Set the diffuse variable
+		if (m_pDiffuseMapVariable->IsValid() && m_pDiffuse != nullptr)
+		{
+			m_pDiffuseMapVariable->SetResource(m_pDiffuse->GetTextureResourceView());
+		}
 	}
 
 
@@ -112,4 +132,10 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
 		m_Effect.GetTechnique()->GetPassByIndex(0)->Apply(0, pDeviceContext);
 		pDeviceContext->DrawIndexed(m_AmountIndices, 0, 0);
 	}
+}
+
+void Mesh::SetDiffuseTexture(Texture* pDiffuseTexture)
+{
+	delete m_pDiffuse; // if it's not nullptr, destroy
+	m_pDiffuse = pDiffuseTexture;
 }
