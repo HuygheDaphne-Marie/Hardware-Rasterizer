@@ -60,9 +60,6 @@ int main(int argc, char* args[])
 		activeScene.AddGeometryToScene(new Mesh(pRenderer->GetDevice(), vertices, indices, L"Resources/PosCol3D.fx"));
 	}
 	
-
-	
-
 	//Start loop
 	pTimer->Start();
 	float printTimer = 0.f;

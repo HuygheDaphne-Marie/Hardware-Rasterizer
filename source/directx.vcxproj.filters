@@ -23,6 +23,9 @@
     <Filter Include="Scene">
       <UniqueIdentifier>{cac291df-e288-433f-a161-997b33d75afa}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Textures">
+      <UniqueIdentifier>{be3d6c41-d760-4e15-a9d7-73b8e045e902}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EMath.h">
@@ -98,6 +101,7 @@
     <ClInclude Include="Singleton.h">
       <Filter>Scene</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ERenderer.cpp">
@@ -122,6 +126,9 @@
     </ClCompile>
     <ClCompile Include="SceneGraph.cpp">
       <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Math</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
