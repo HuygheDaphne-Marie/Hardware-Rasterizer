@@ -139,3 +139,8 @@ void Mesh::SetDiffuseTexture(Texture* pDiffuseTexture)
 	delete m_pDiffuse; // if it's not nullptr, destroy
 	m_pDiffuse = pDiffuseTexture;
 }
+
+Effect& Mesh::GetEffect()
+{
+	return m_Effect;
+}

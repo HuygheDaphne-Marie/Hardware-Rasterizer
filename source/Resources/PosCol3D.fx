@@ -9,6 +9,22 @@ SamplerState samplePoint
 	BorderColor = float4(0.0f, 0.0f, 1.0f, 1.0f);
 };
 
+SamplerState sampleLinear
+{
+	Filter = MIN_MAG_MIP_LINEAR;
+	AddressU = Border; // or mirror or clamp or border
+	AddressV = Clamp; // or mirror or clamp or border
+	BorderColor = float4(0.0f, 0.0f, 1.0f, 1.0f);
+};
+
+SamplerState sampleAnisotropic
+{
+	Filter = ANISOTROPIC;
+	AddressU = Border; // or mirror or clamp or border
+	AddressV = Clamp; // or mirror or clamp or border
+	BorderColor = float4(0.0f, 0.0f, 1.0f, 1.0f);
+};
+
 struct VS_INPUT
 {
 	float3 Position : POSITION;
@@ -34,9 +50,19 @@ VS_OUTPUT VS(VS_INPUT input)
 };
 
 // Pixel Shader
-float4 PS(VS_OUTPUT input) : SV_TARGET
+float4 PS_POINT(VS_OUTPUT input) : SV_TARGET
 {
 	return float4(gDiffuseMap.Sample(samplePoint, input.TextureUV) * input.Color, 1.f);
+};
+
+float4 PS_LINEAR(VS_OUTPUT input) : SV_TARGET
+{
+	return float4(gDiffuseMap.Sample(sampleLinear, input.TextureUV) * input.Color, 1.f);
+};
+
+float4 PS_ANISOTROPIC(VS_OUTPUT input) : SV_TARGET
+{
+	return float4(gDiffuseMap.Sample(sampleAnisotropic, input.TextureUV) * input.Color, 1.f);
 };
 
 // Technique
@@ -46,6 +72,26 @@ technique11 DefaultTechnique
 	{
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
-		SetPixelShader(CompileShader(ps_5_0, PS()));
+		SetPixelShader(CompileShader(ps_5_0, PS_POINT()));
+	}
+};
+
+technique11 LinearTechnique
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS_LINEAR()));
+	}
+};
+
+technique11 AnisotropicTechnique
+{
+	pass P0
+	{
+		SetVertexShader(CompileShader(vs_5_0, VS()));
+		SetGeometryShader(NULL);
+		SetPixelShader(CompileShader(ps_5_0, PS_ANISOTROPIC()));
 	}
 };

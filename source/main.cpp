@@ -80,6 +80,13 @@ int main(int argc, char* args[])
 				isLooping = false;
 				break;
 			case SDL_KEYUP:
+				if (e.key.keysym.sym == SDLK_f)
+				{
+					for (auto* pMesh : activeScene.GetGeometries())
+					{
+						pMesh->GetEffect().GotoNextTechnique();
+					}
+				}
 				break;
 			}
 		}

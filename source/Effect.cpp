@@ -5,7 +5,6 @@
 
 Effect::Effect(ID3D11Device* pDevice, const std::wstring& path)
 	: m_pEffect(nullptr)
-	, m_pTechnique(nullptr)
 {
 	m_pEffect = LoadEffect(pDevice, path);
 	if (m_pEffect == nullptr || !m_pEffect->IsValid())
@@ -13,17 +12,17 @@ Effect::Effect(ID3D11Device* pDevice, const std::wstring& path)
 		std::cout << "Effect is invalid";
 		return;
 	}
-	
-	m_pTechnique = m_pEffect->GetTechniqueByName("DefaultTechnique");
-	if (m_pTechnique == nullptr || !m_pTechnique->IsValid())
-	{
-		std::cout << "Technique is invalid";
-		return;
-	}
+
+	m_pTechniques.push_back(LoadTechnique("DefaultTechnique"));
+	m_pTechniques.push_back(LoadTechnique("LinearTechnique"));
+	m_pTechniques.push_back(LoadTechnique("AnisotropicTechnique"));
 }
 Effect::~Effect()
 {
-	m_pTechnique->Release();
+	for (auto* pTechnique : m_pTechniques)
+	{
+		pTechnique->Release();
+	}
 	m_pEffect->Release();
 }
 
@@ -33,7 +32,13 @@ ID3DX11Effect* Effect::GetEffect() const
 }
 ID3DX11EffectTechnique* Effect::GetTechnique() const
 {
-	return m_pTechnique;
+	return m_pTechniques[m_CurrentTechniqueIndex];
+}
+
+void Effect::GotoNextTechnique()
+{
+	++m_CurrentTechniqueIndex;
+	m_CurrentTechniqueIndex %= m_pTechniques.size();
 }
 
 ID3DX11Effect* Effect::LoadEffect(ID3D11Device* pDevice, const std::wstring& path)
@@ -84,4 +89,16 @@ ID3DX11Effect* Effect::LoadEffect(ID3D11Device* pDevice, const std::wstring& pat
 	std::cout << "Effect loaded successfully\n";
 	
 	return pEffect;
+}
+
+ID3DX11EffectTechnique* Effect::LoadTechnique(const std::string& techniqueName) const
+{
+	ID3DX11EffectTechnique* technique = m_pEffect->GetTechniqueByName(techniqueName.c_str());
+	if (technique == nullptr || !technique->IsValid())
+	{
+		std::cout << "Technique: '" << techniqueName <<"' is invalid";
+		return nullptr;
+	}
+
+	return technique;
 }

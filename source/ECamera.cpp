@@ -24,7 +24,7 @@ namespace Elite
 		//Capture Input (absolute) Rotation & (relative) Movement
 		//*************
 		//Keyboard Input
-		const uint8_t* pKeyboardState = SDL_GetKeyboardState(0);
+		const uint8_t* pKeyboardState = SDL_GetKeyboardState(nullptr);
 		const float keyboardSpeed = pKeyboardState[SDL_SCANCODE_LSHIFT] ? m_KeyboardMoveSensitivity * m_KeyboardMoveMultiplier : m_KeyboardMoveSensitivity;
 		m_RelativeTranslation.x = (pKeyboardState[SDL_SCANCODE_D] - pKeyboardState[SDL_SCANCODE_A]) * keyboardSpeed * elapsedSec;
 		m_RelativeTranslation.y = 0;

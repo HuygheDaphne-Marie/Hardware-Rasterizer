@@ -19,6 +19,8 @@ public:
 
 	void SetDiffuseTexture(Texture* pDiffuseTexture);
 
+	Effect& GetEffect();
+
 private:
 	Effect m_Effect;
 
