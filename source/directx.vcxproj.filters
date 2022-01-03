@@ -26,6 +26,9 @@
     <Filter Include="Textures">
       <UniqueIdentifier>{be3d6c41-d760-4e15-a9d7-73b8e045e902}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Parsing">
+      <UniqueIdentifier>{d7ef0dc4-cd8f-4deb-803f-c059d0c6221b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="EMath.h">
@@ -103,6 +106,9 @@
     </ClInclude>
     <ClInclude Include="Texture.h">
       <Filter>Textures</Filter>
+    </ClInclude>
+    <ClInclude Include="EOBJParser.h">
+      <Filter>Parsing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
