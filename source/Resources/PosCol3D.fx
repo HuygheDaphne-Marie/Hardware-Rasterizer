@@ -1,6 +1,12 @@
 float4x4 gWorldViewProj : WorldViewProjection;
 Texture2D gDiffuseMap : DiffuseMap;
 
+RasterizerState gRasterizerState
+{
+	CullMode = back;
+	FrontCounterClockwise = true;
+};
+
 SamplerState samplePoint
 {
 	Filter = MIN_MAG_MIP_POINT;
@@ -70,6 +76,7 @@ technique11 DefaultTechnique
 {
 	pass P0
 	{
+		SetRasterizerState(gRasterizerState);
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_POINT()));
@@ -80,6 +87,7 @@ technique11 LinearTechnique
 {
 	pass P0
 	{
+		SetRasterizerState(gRasterizerState);
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_LINEAR()));
@@ -90,6 +98,7 @@ technique11 AnisotropicTechnique
 {
 	pass P0
 	{
+		SetRasterizerState(gRasterizerState);
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_ANISOTROPIC()));

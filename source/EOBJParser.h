@@ -44,7 +44,7 @@ namespace Elite
 				//Vertex
 				float x, y, z;
 				file >> x >> y >> z;
-				positions.push_back(FPoint3(x, y, z));
+				positions.push_back(FPoint3(x, y, -z));
 			}
 			else if (sCommand == "vt")
 			{
@@ -58,7 +58,7 @@ namespace Elite
 				// Vertex Normal
 				float x, y, z;
 				file >> x >> y >> z;
-				normals.push_back(FVector3(x, y, z));
+				normals.push_back(FVector3(x, y, -z));
 			}
 			else if (sCommand == "f")
 			{
