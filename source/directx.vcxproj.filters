@@ -83,7 +83,7 @@
       <Filter>Helpers</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Material.h">
+    <ClInclude Include="VehicleMaterial.h">
       <Filter>Effect/Material</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
@@ -110,7 +110,7 @@
     <ClInclude Include="EOBJParser.h">
       <Filter>Parsing</Filter>
     </ClInclude>
-    <ClInclude Include="BaseMaterial.h">
+    <ClInclude Include="Material.h">
       <Filter>Effect/Material</Filter>
     </ClInclude>
   </ItemGroup>
@@ -123,7 +123,7 @@
       <Filter>Helpers</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Material.cpp">
+    <ClCompile Include="VehicleMaterial.cpp">
       <Filter>Effect/Material</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
@@ -141,7 +141,7 @@
     <ClCompile Include="Texture.cpp">
       <Filter>Textures</Filter>
     </ClCompile>
-    <ClCompile Include="BaseMaterial.cpp">
+    <ClCompile Include="Material.cpp">
       <Filter>Effect/Material</Filter>
     </ClCompile>
   </ItemGroup>

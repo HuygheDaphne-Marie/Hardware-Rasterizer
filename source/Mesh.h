@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Vertex.h"
-#include "Material.h"
+#include "VehicleMaterial.h"
 #include "ECamera.h"
 #include "Texture.h"
 
@@ -15,42 +15,17 @@ public:
 	Mesh operator=(Mesh&& other) = delete;
 	~Mesh();
 
-	void Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera);
+	void Render(ID3D11DeviceContext* pDeviceContext);
 
-	// Todo: Is this ass?
-	void SetDiffuseTexture(Texture* pDiffuseTexture);
-	void SetNormalMap(Texture* pNormalMap);
-	void SetSpecularMap(Texture* pSpecularMap);
-	void SetGlossinessMap(Texture* pGlossinessMap);
-
-	Material& GetEffect();
+	VehicleMaterial& GetEffect();
 
 private:
-	Material m_Effect;
+	VehicleMaterial m_Effect;
 
 	ID3D11Buffer* m_pVertexBuffer;
 	ID3D11InputLayout* m_pVertexLayout;
 
 	uint32_t m_AmountIndices;
 	ID3D11Buffer* m_pIndexBuffer;
-
-	// Matrices
-	ID3DX11EffectMatrixVariable* m_pWorldViewProjVariable;
-	ID3DX11EffectMatrixVariable* m_pWorldMatrixVariable;
-	ID3DX11EffectMatrixVariable* m_pViewInverseMatrixVariable;
-
-	// Textures/Maps
-	ID3DX11EffectShaderResourceVariable* m_pDiffuseMapVariable;
-	ID3DX11EffectShaderResourceVariable* m_pNormalMapVariable;
-	ID3DX11EffectShaderResourceVariable* m_pSpecularMapVariable;
-	ID3DX11EffectShaderResourceVariable* m_pGlossinessMapVariable;
-
-	Texture* m_pDiffuse{ nullptr };
-	Texture* m_pNormalMap{ nullptr };
-	Texture* m_pSpecularMap{ nullptr };
-	Texture* m_pGlossinessMap{ nullptr };
-
-	void SetEffectMatrix(const std::string& matrixVariableName, ID3DX11EffectMatrixVariable* pMeshMatrix, const Elite::FMatrix4& pMeshMatrixValue);
-	void SetEffectShaderResource(const std::string& shaderVariableName, ID3DX11EffectShaderResourceVariable* pMeshShaderResource, Texture* pMeshShaderResourceValue);
 };
 

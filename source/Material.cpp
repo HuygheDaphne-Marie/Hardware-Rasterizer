@@ -3,6 +3,8 @@
 
 #include <sstream>
 
+#include "SceneManager.h"
+
 Material::Material(ID3D11Device* pDevice, const std::wstring& path)
 	: m_pEffect(nullptr)
 {
@@ -39,6 +41,15 @@ void Material::GotoNextTechnique()
 {
 	++m_CurrentTechniqueIndex;
 	m_CurrentTechniqueIndex %= m_pTechniques.size();
+}
+
+// Base material update, will only set the WorldViewProjection
+void Material::Update()
+{
+	const Camera* pCamera = SceneManager::GetInstance().GetActiveScene().GetCamera();
+	SetEffectMatrix("gWorldViewProj", m_pWorldViewProjVariable, pCamera->GetProjection() * pCamera->GetWorldToView());
+
+	// Rest has to be done by subclasses in their overloaded Update() function
 }
 
 ID3DX11Effect* Material::LoadEffect(ID3D11Device* pDevice, const std::wstring& path)
@@ -87,18 +98,55 @@ ID3DX11Effect* Material::LoadEffect(ID3D11Device* pDevice, const std::wstring& p
 	}
 
 	std::cout << "Material loaded successfully\n";
-	
+
 	return pEffect;
 }
-
 ID3DX11EffectTechnique* Material::LoadTechnique(const std::string& techniqueName) const
 {
 	ID3DX11EffectTechnique* technique = m_pEffect->GetTechniqueByName(techniqueName.c_str());
 	if (technique == nullptr || !technique->IsValid())
 	{
-		std::cout << "Technique: '" << techniqueName <<"' is invalid";
+		std::cout << "Technique: '" << techniqueName << "' is invalid";
 		return nullptr;
 	}
 
 	return technique;
+}
+
+// Generalized functions for setting shader variables, don't make these const
+void Material::SetEffectMatrix(const std::string& matrixVariableName, ID3DX11EffectMatrixVariable* pMeshMatrix,
+	const Elite::FMatrix4& pMeshMatrixValue)
+{
+	// Get matrix
+	pMeshMatrix = m_pEffect->GetVariableByName(matrixVariableName.c_str())->AsMatrix();
+	if (!pMeshMatrix->IsValid())
+	{
+		std::cout << matrixVariableName << " is not valid\n";
+		return;
+	}
+
+	// Set matrix if it's valid
+	const HRESULT res = pMeshMatrix->SetMatrix(*pMeshMatrixValue.data);
+	if (FAILED(res))
+	{
+		std::cout << "Issue setting " << matrixVariableName << std::endl;
+		return;
+	}
+}
+void Material::SetEffectShaderResource(const std::string& shaderVariableName, ID3DX11EffectShaderResourceVariable* pMeshShaderResource,
+	Texture* pMeshShaderResourceValue)
+{
+	// Get the shader resource  variable
+	pMeshShaderResource = m_pEffect->GetVariableByName(shaderVariableName.c_str())->AsShaderResource();
+	if (!pMeshShaderResource->IsValid())
+	{
+		std::cout << shaderVariableName << " is not valid\n";
+		return;
+	}
+
+	// Set the diffuse variable
+	if (pMeshShaderResource->IsValid() && pMeshShaderResourceValue != nullptr)
+	{
+		pMeshShaderResource->SetResource(pMeshShaderResourceValue->GetTextureResourceView());
+	}
 }

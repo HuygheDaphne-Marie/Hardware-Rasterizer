@@ -69,7 +69,7 @@ void Elite::Renderer::Render()
 	// Render
 	for (Mesh* mesh : SceneManager::GetInstance().GetActiveScene().GetGeometries())
 	{
-		mesh->Render(m_pDeviceContext, SceneManager::GetInstance().GetActiveScene().GetCamera());
+		mesh->Render(m_pDeviceContext);
 	}
 
 	// Present

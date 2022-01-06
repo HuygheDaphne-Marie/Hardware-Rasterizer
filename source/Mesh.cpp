@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "Mesh.h"
+#include "SceneManager.h"
 
 Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const std::vector<unsigned int>& indices, const std::wstring& effectPath)
 	: m_Effect(pDevice, effectPath)
@@ -71,14 +72,9 @@ Mesh::~Mesh()
 	m_pIndexBuffer->Release();
 	m_pVertexLayout->Release();
 	m_pVertexBuffer->Release();
-
-	delete m_pDiffuse; // Todo: textureManager, if need be
-	delete m_pNormalMap; // Todo: textureManager, if need be
-	delete m_pSpecularMap; // Todo: textureManager, if need be
-	delete m_pGlossinessMap; // Todo: textureManager, if need be
 }
 
-void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
+void Mesh::Render(ID3D11DeviceContext* pDeviceContext)
 {
 	// Set vertex buffer
 	UINT stride = sizeof(IVertex);
@@ -94,19 +90,8 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
 	// Set primitive topology
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Todo: move all this shader stuff to the Material/Material Update (for the vehicle specifically)
-
-	// Set Matrices
-	SetEffectMatrix("gWorldViewProj", m_pWorldViewProjVariable, pCamera->GetProjection() * pCamera->GetWorldToView());
-	SetEffectMatrix("gWorldMatrix", m_pWorldMatrixVariable, Elite::FMatrix4::Identity()); // Todo: actually get a world matrix for a mesh
-	SetEffectMatrix("gWorldMatrix", m_pViewInverseMatrixVariable, pCamera->GetViewToWorld());
-
-	// Set Texture/Maps
-	SetEffectShaderResource("gDiffuseMap", m_pDiffuseMapVariable, m_pDiffuse);
-	SetEffectShaderResource("gNormalMap", m_pNormalMapVariable, m_pNormalMap);
-	SetEffectShaderResource("gSpecularMap", m_pSpecularMapVariable, m_pSpecularMap);
-	SetEffectShaderResource("gGlossinessMap", m_pGlossinessMapVariable, m_pGlossinessMap);
-
+	// Update Effect (Sets shader variables)
+	m_Effect.Update();
 
 	// Render a triangle
 	D3DX11_TECHNIQUE_DESC techDesc{}; // Todo: edited this
@@ -118,66 +103,7 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
 	}
 }
 
-void Mesh::SetDiffuseTexture(Texture* pDiffuseTexture)
-{
-	delete m_pDiffuse; // if it's not nullptr, destroy
-	m_pDiffuse = pDiffuseTexture;
-}
-void Mesh::SetNormalMap(Texture* pNormalMap)
-{
-	delete m_pNormalMap; // if it's not nullptr, destroy
-	m_pNormalMap = pNormalMap;
-}
-void Mesh::SetSpecularMap(Texture* pSpecularMap)
-{
-	delete m_pSpecularMap; // if it's not nullptr, destroy
-	m_pSpecularMap = pSpecularMap;
-}
-void Mesh::SetGlossinessMap(Texture* pGlossinessMap)
-{
-	delete m_pGlossinessMap; // if it's not nullptr, destroy
-	m_pGlossinessMap = pGlossinessMap;
-}
-
-Material& Mesh::GetEffect()
+VehicleMaterial& Mesh::GetEffect()
 {
 	return m_Effect;
-}
-
-// Generalized functions for setting shader variables, don't make these const
-void Mesh::SetEffectMatrix(const std::string& matrixVariableName, ID3DX11EffectMatrixVariable* pMeshMatrix,
-	const Elite::FMatrix4& pMeshMatrixValue)
-{
-	// Get matrix
-	pMeshMatrix = m_Effect.GetEffect()->GetVariableByName(matrixVariableName.c_str())->AsMatrix();
-	if (!pMeshMatrix->IsValid())
-	{
-		std::cout << matrixVariableName << " is not valid\n";
-		return;
-	}
-
-	// Set matrix if it's valid
-	const HRESULT res = pMeshMatrix->SetMatrix(*pMeshMatrixValue.data);
-	if (FAILED(res))
-	{
-		std::cout << "Issue setting " << matrixVariableName << std::endl;
-		return;
-	}
-}
-void Mesh::SetEffectShaderResource( const std::string& shaderVariableName, ID3DX11EffectShaderResourceVariable* pMeshShaderResource, 
-	Texture* pMeshShaderResourceValue)
-{
-	// Get the shader resource  variable
-	pMeshShaderResource = m_Effect.GetEffect()->GetVariableByName(shaderVariableName.c_str())->AsShaderResource();
-	if (!pMeshShaderResource->IsValid())
-	{
-		std::cout << shaderVariableName << " is not valid\n";
-		return;
-	}
-
-	// Set the diffuse variable
-	if (pMeshShaderResource->IsValid() && pMeshShaderResourceValue != nullptr)
-	{
-		pMeshShaderResource->SetResource(pMeshShaderResourceValue->GetTextureResourceView());
-	}
 }

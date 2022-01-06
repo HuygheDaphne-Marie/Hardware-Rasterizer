@@ -13,6 +13,8 @@
 #include "Texture.h"
 #include "EOBJParser.h"
 
+#include "VehicleMaterial.h"
+
 using namespace Elite;
 
 void ShutDown(SDL_Window* pWindow)
@@ -68,10 +70,11 @@ int main(int argc, char* args[])
 		ParseOBJ("Resources/vehicle.obj", verticesFromFile, indices);
 
 		Mesh* pMesh = new Mesh(pRenderer->GetDevice(), verticesFromFile, indices, L"Resources/PosCol3D.fx");
-		pMesh->SetDiffuseTexture(new Texture("Resources/vehicle_diffuse.png", pRenderer->GetDevice()));
-		pMesh->SetNormalMap(new Texture("Resources/vehicle_normal.png", pRenderer->GetDevice()));
-		pMesh->SetSpecularMap(new Texture("Resources/vehicle_specular.png", pRenderer->GetDevice()));
-		pMesh->SetGlossinessMap(new Texture("Resources/vehicle_gloss.png", pRenderer->GetDevice()));
+		VehicleMaterial& vehicleMaterial{ pMesh->GetEffect() };
+		vehicleMaterial.SetDiffuseTexture(new Texture("Resources/vehicle_diffuse.png", pRenderer->GetDevice()));
+		vehicleMaterial.SetNormalMap(new Texture("Resources/vehicle_normal.png", pRenderer->GetDevice()));
+		vehicleMaterial.SetSpecularMap(new Texture("Resources/vehicle_specular.png", pRenderer->GetDevice()));
+		vehicleMaterial.SetGlossinessMap(new Texture("Resources/vehicle_gloss.png", pRenderer->GetDevice()));
 		activeScene.AddGeometryToScene(pMesh);
 	}
 	
