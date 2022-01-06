@@ -69,6 +69,9 @@ int main(int argc, char* args[])
 
 		Mesh* pMesh = new Mesh(pRenderer->GetDevice(), verticesFromFile, indices, L"Resources/PosCol3D.fx");
 		pMesh->SetDiffuseTexture(new Texture("Resources/vehicle_diffuse.png", pRenderer->GetDevice()));
+		pMesh->SetNormalMap(new Texture("Resources/vehicle_normal.png", pRenderer->GetDevice()));
+		pMesh->SetSpecularMap(new Texture("Resources/vehicle_specular.png", pRenderer->GetDevice()));
+		pMesh->SetGlossinessMap(new Texture("Resources/vehicle_gloss.png", pRenderer->GetDevice()));
 		activeScene.AddGeometryToScene(pMesh);
 	}
 	

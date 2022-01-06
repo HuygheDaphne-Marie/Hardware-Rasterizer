@@ -1,11 +1,26 @@
+// ===== ===== Variables ===== =====
 float4x4 gWorldViewProj : WorldViewProjection;
+float4x4 gWorldMatrix : WorldMatrix;
+float4x4 gViewInverseMatrix : ViewInverseMatrix;
+
 Texture2D gDiffuseMap : DiffuseMap;
+Texture2D gNormalMap : NormalMap;
+Texture2D gSpecularMap : SpecularMap;
+Texture2D gGlossinessMap : GlossinessMap;
+
+float3 gLightDirection : LightDirection = float3(0.577f, -0.577f, 0.577f);
+float gPI					= 3.1415f;
+float gLightIntensity		= float(7.f);
+float gShininess			= float(25.f);
 
 RasterizerState gRasterizerState
 {
 	CullMode = back;
 	FrontCounterClockwise = true;
 };
+
+
+// ===== ===== Sample States ===== =====
 
 SamplerState samplePoint
 {
@@ -31,53 +46,87 @@ SamplerState sampleAnisotropic
 	BorderColor = float4(0.0f, 0.0f, 1.0f, 1.0f);
 };
 
+
+// ===== ===== IO Structs ===== =====
+
 struct VS_INPUT
 {
 	float3 Position : POSITION;
-	float2 TextureUV : TEXCOORD;
+	float2 UV : TEXCOORD;
 	float3 Normal : NORMAL;
 	float3 Tangent : TANGENT;
-	float3 Color : COLOR;
 };
 
 struct VS_OUTPUT
 {
 	float4 Position : SV_POSITION;
-	float2 TextureUV : TEXCOORD;
+	float2 UV : TEXCOORD;
 	float3 Normal : NORMAL;
 	float3 Tangent : TANGENT;
-	float3 Color : COLOR;
+	float4 Worldposition : WORLDPOSITION;
 };
 
-// Vertex Shader
+
+// ===== ===== Vertex Shader ===== =====
+
 VS_OUTPUT VS(VS_INPUT input)
 {
 	VS_OUTPUT output = (VS_OUTPUT)0;
 	output.Position = mul(float4(input.Position, 1.f), gWorldViewProj);
-	output.TextureUV = input.TextureUV;
-	output.Normal = input.Normal;
-	output.Tangent = input.Tangent;
-	output.Color = input.Color;
+	output.UV = input.UV;
+	output.Normal = mul(normalize(input.Normal), (float3x3)gWorldMatrix);
+	output.Tangent = mul(normalize(input.Tangent), (float3x3)gWorldMatrix);
+	output.Worldposition = mul(input.Position, gWorldMatrix);
 	return output;
 };
 
-// Pixel Shader
+
+// ===== ===== Pixel Shader Functions ===== =====
+
+float CalculatePhong(float3 specular, float phongExponent, float3 view, float3 normal)
+{
+    float3 reflect								= gLightDirection - 2.f * dot(normal, gLightDirection) * normal;
+    float angleBetweenReflectAndLightDirection	= abs(dot(reflect, view));
+    float phongValue							= specular.r * pow(angleBetweenReflectAndLightDirection, phongExponent);
+    return phongValue;
+}
+float3 Phong(SamplerState state, VS_OUTPUT input)
+{
+	float3 binormal 							= normalize(cross(input.Normal, input.Tangent));
+	float3x3 tangentSpaceAxis 					= float3x3(normalize(input.Tangent),binormal,input.Normal);
+	float3 normalMapSample 						= gNormalMap.Sample(state, input.UV).xyz;
+	float3 newNormal 							= 2.f * normalMapSample - 1.f;
+	float3 tangentSpaceNormal					= normalize(mul(newNormal, tangentSpaceAxis));
+	
+	float observedArea							= dot(-tangentSpaceNormal, gLightDirection);
+	observedArea								= saturate(observedArea);
+	
+    float phongValue = CalculatePhong(gSpecularMap.Sample(state, input.UV).xyz, gGlossinessMap.Sample(state, input.UV).x * gShininess,
+					normalize(input.Worldposition.xyz - gViewInverseMatrix[3].xyz), tangentSpaceNormal);
+	
+    return float3(gLightIntensity * (observedArea / gPI) * (gDiffuseMap.Sample(state, input.UV).xyz + phongValue));
+};
+
+// ===== ===== Pixel Shader ===== =====
+
 float4 PS_POINT(VS_OUTPUT input) : SV_TARGET
 {
-	return float4(gDiffuseMap.Sample(samplePoint, input.TextureUV) * input.Color, 1.f);
+	return float4(Phong(samplePoint, input), 1.f);
 };
 
 float4 PS_LINEAR(VS_OUTPUT input) : SV_TARGET
 {
-	return float4(gDiffuseMap.Sample(sampleLinear, input.TextureUV) * input.Color, 1.f);
+	return float4(Phong(sampleLinear, input), 1.f);
 };
 
 float4 PS_ANISOTROPIC(VS_OUTPUT input) : SV_TARGET
 {
-	return float4(gDiffuseMap.Sample(sampleAnisotropic, input.TextureUV) * input.Color, 1.f);
+	return float4(Phong(sampleAnisotropic, input), 1.f);
 };
 
-// Technique
+
+// ===== ===== Techniques ===== =====
+
 technique11 DefaultTechnique
 {
 	pass P0

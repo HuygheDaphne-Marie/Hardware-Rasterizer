@@ -6,7 +6,7 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 {	
 	// Create vertex layout
 	HRESULT result = S_OK;
-	static constexpr uint32_t numElements{ 5 };
+	static constexpr uint32_t numElements{ 4 };
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[numElements]{};
 
 	vertexDesc[0].SemanticName = "POSITION";
@@ -28,11 +28,6 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 	vertexDesc[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[3].AlignedByteOffset = 32;
 	vertexDesc[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
-
-	vertexDesc[4].SemanticName = "COLOR";
-	vertexDesc[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
-	vertexDesc[4].AlignedByteOffset = 44;
-	vertexDesc[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC bd{};
@@ -78,6 +73,9 @@ Mesh::~Mesh()
 	m_pVertexBuffer->Release();
 
 	delete m_pDiffuse; // Todo: textureManager, if need be
+	delete m_pNormalMap; // Todo: textureManager, if need be
+	delete m_pSpecularMap; // Todo: textureManager, if need be
+	delete m_pGlossinessMap; // Todo: textureManager, if need be
 }
 
 void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
@@ -96,46 +94,21 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
 	// Set primitive topology
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
-	// Matrix
-	{
-		// Set WorldViewProjection matrix
-		m_pMatWorldViewProjVariable = m_Effect.GetEffect()->GetVariableByName("gWorldViewProj")->AsMatrix();
-		if (!m_pMatWorldViewProjVariable->IsValid())
-		{
-			std::cout << "m_pMatWorldViewProjVariable is not valid\n";
-			return;
-		}
 
-		// Set matrix if it's valid
-		const Elite::FMatrix4 worldViewProjection{ pCamera->GetProjection() * pCamera->GetWorldToView() };
-		const HRESULT res = m_pMatWorldViewProjVariable->SetMatrix(*worldViewProjection.data);
-		if (FAILED(res))
-		{
-			std::cout << "Issue setting matrix\n";
-			return;
-		}
-	}
+	// Set Matrices
+	SetEffectMatrix("gWorldViewProj", m_pWorldViewProjVariable, pCamera->GetProjection() * pCamera->GetWorldToView());
+	SetEffectMatrix("gWorldMatrix", m_pWorldMatrixVariable, Elite::FMatrix4::Identity()); // Todo: actually get a world matrix for a mesh
+	SetEffectMatrix("gWorldMatrix", m_pViewInverseMatrixVariable, pCamera->GetViewToWorld());
 
-	// Diffuse
-	{
-		// Get the shader diffuse map variable
-		m_pDiffuseMapVariable = m_Effect.GetEffect()->GetVariableByName("gDiffuseMap")->AsShaderResource();
-		if (!m_pDiffuseMapVariable->IsValid())
-		{
-			std::cout << "m_pDiffuseMapVariable is not valid\n";
-			return;
-		}
-
-		// Set the diffuse variable
-		if (m_pDiffuseMapVariable->IsValid() && m_pDiffuse != nullptr)
-		{
-			m_pDiffuseMapVariable->SetResource(m_pDiffuse->GetTextureResourceView());
-		}
-	}
+	// Set Texture/Maps
+	SetEffectShaderResource("gDiffuseMap", m_pDiffuseMapVariable, m_pDiffuse);
+	SetEffectShaderResource("gNormalMap", m_pNormalMapVariable, m_pNormalMap);
+	SetEffectShaderResource("gSpecularMap", m_pSpecularMapVariable, m_pSpecularMap);
+	SetEffectShaderResource("gGlossinessMap", m_pGlossinessMapVariable, m_pGlossinessMap);
 
 
 	// Render a triangle
-	D3DX11_TECHNIQUE_DESC techDesc;
+	D3DX11_TECHNIQUE_DESC techDesc{}; // Todo: edited this
 	m_Effect.GetTechnique()->GetDesc(&techDesc);
 	for (UINT passIndex = 0; passIndex < techDesc.Passes; ++passIndex)
 	{
@@ -149,8 +122,61 @@ void Mesh::SetDiffuseTexture(Texture* pDiffuseTexture)
 	delete m_pDiffuse; // if it's not nullptr, destroy
 	m_pDiffuse = pDiffuseTexture;
 }
+void Mesh::SetNormalMap(Texture* pNormalMap)
+{
+	delete m_pNormalMap; // if it's not nullptr, destroy
+	m_pNormalMap = pNormalMap;
+}
+void Mesh::SetSpecularMap(Texture* pSpecularMap)
+{
+	delete m_pSpecularMap; // if it's not nullptr, destroy
+	m_pSpecularMap = pSpecularMap;
+}
+void Mesh::SetGlossinessMap(Texture* pGlossinessMap)
+{
+	delete m_pGlossinessMap; // if it's not nullptr, destroy
+	m_pGlossinessMap = pGlossinessMap;
+}
 
 Effect& Mesh::GetEffect()
 {
 	return m_Effect;
+}
+
+// Generalized functions for setting shader variables, don't make these const
+void Mesh::SetEffectMatrix(const std::string& matrixVariableName, ID3DX11EffectMatrixVariable* pMeshMatrix,
+	const Elite::FMatrix4& pMeshMatrixValue)
+{
+	// Get matrix
+	pMeshMatrix = m_Effect.GetEffect()->GetVariableByName(matrixVariableName.c_str())->AsMatrix();
+	if (!pMeshMatrix->IsValid())
+	{
+		std::cout << matrixVariableName << " is not valid\n";
+		return;
+	}
+
+	// Set matrix if it's valid
+	const HRESULT res = pMeshMatrix->SetMatrix(*pMeshMatrixValue.data);
+	if (FAILED(res))
+	{
+		std::cout << "Issue setting " << matrixVariableName << std::endl;
+		return;
+	}
+}
+void Mesh::SetEffectShaderResource( const std::string& shaderVariableName, ID3DX11EffectShaderResourceVariable* pMeshShaderResource, 
+	Texture* pMeshShaderResourceValue)
+{
+	// Get the shader resource  variable
+	pMeshShaderResource = m_Effect.GetEffect()->GetVariableByName(shaderVariableName.c_str())->AsShaderResource();
+	if (!pMeshShaderResource->IsValid())
+	{
+		std::cout << shaderVariableName << " is not valid\n";
+		return;
+	}
+
+	// Set the diffuse variable
+	if (pMeshShaderResource->IsValid() && pMeshShaderResourceValue != nullptr)
+	{
+		pMeshShaderResource->SetResource(pMeshShaderResourceValue->GetTextureResourceView());
+	}
 }
