@@ -6,7 +6,7 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 {	
 	// Create vertex layout
 	HRESULT result = S_OK;
-	static constexpr uint32_t numElements{ 3 };
+	static constexpr uint32_t numElements{ 5 };
 	D3D11_INPUT_ELEMENT_DESC vertexDesc[numElements]{};
 
 	vertexDesc[0].SemanticName = "POSITION";
@@ -19,10 +19,20 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 	vertexDesc[1].AlignedByteOffset = 12;
 	vertexDesc[1].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
-	vertexDesc[2].SemanticName = "COLOR";
+	vertexDesc[2].SemanticName = "NORMAL";
 	vertexDesc[2].Format = DXGI_FORMAT_R32G32B32_FLOAT;
 	vertexDesc[2].AlignedByteOffset = 20;
 	vertexDesc[2].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+
+	vertexDesc[3].SemanticName = "TANGENT";
+	vertexDesc[3].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[3].AlignedByteOffset = 32;
+	vertexDesc[3].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
+
+	vertexDesc[4].SemanticName = "COLOR";
+	vertexDesc[4].Format = DXGI_FORMAT_R32G32B32_FLOAT;
+	vertexDesc[4].AlignedByteOffset = 44;
+	vertexDesc[4].InputSlotClass = D3D11_INPUT_PER_VERTEX_DATA;
 
 	// Create vertex buffer
 	D3D11_BUFFER_DESC bd{};
