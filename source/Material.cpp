@@ -1,15 +1,15 @@
 #include "pch.h"
-#include "Effect.h"
+#include "Material.h"
 
 #include <sstream>
 
-Effect::Effect(ID3D11Device* pDevice, const std::wstring& path)
+Material::Material(ID3D11Device* pDevice, const std::wstring& path)
 	: m_pEffect(nullptr)
 {
 	m_pEffect = LoadEffect(pDevice, path);
 	if (m_pEffect == nullptr || !m_pEffect->IsValid())
 	{
-		std::cout << "Effect is invalid";
+		std::cout << "Material is invalid";
 		return;
 	}
 
@@ -17,7 +17,7 @@ Effect::Effect(ID3D11Device* pDevice, const std::wstring& path)
 	m_pTechniques.push_back(LoadTechnique("LinearTechnique"));
 	m_pTechniques.push_back(LoadTechnique("AnisotropicTechnique"));
 }
-Effect::~Effect()
+Material::~Material()
 {
 	for (auto* pTechnique : m_pTechniques)
 	{
@@ -26,22 +26,22 @@ Effect::~Effect()
 	m_pEffect->Release();
 }
 
-ID3DX11Effect* Effect::GetEffect() const
+ID3DX11Effect* Material::GetEffect() const
 {
 	return m_pEffect;
 }
-ID3DX11EffectTechnique* Effect::GetTechnique() const
+ID3DX11EffectTechnique* Material::GetTechnique() const
 {
 	return m_pTechniques[m_CurrentTechniqueIndex];
 }
 
-void Effect::GotoNextTechnique()
+void Material::GotoNextTechnique()
 {
 	++m_CurrentTechniqueIndex;
 	m_CurrentTechniqueIndex %= m_pTechniques.size();
 }
 
-ID3DX11Effect* Effect::LoadEffect(ID3D11Device* pDevice, const std::wstring& path)
+ID3DX11Effect* Material::LoadEffect(ID3D11Device* pDevice, const std::wstring& path)
 {
 	HRESULT result = S_OK;
 	ID3D10Blob* pErrorBlob = nullptr;
@@ -86,12 +86,12 @@ ID3DX11Effect* Effect::LoadEffect(ID3D11Device* pDevice, const std::wstring& pat
 		}
 	}
 
-	std::cout << "Effect loaded successfully\n";
+	std::cout << "Material loaded successfully\n";
 	
 	return pEffect;
 }
 
-ID3DX11EffectTechnique* Effect::LoadTechnique(const std::string& techniqueName) const
+ID3DX11EffectTechnique* Material::LoadTechnique(const std::string& techniqueName) const
 {
 	ID3DX11EffectTechnique* technique = m_pEffect->GetTechniqueByName(techniqueName.c_str());
 	if (technique == nullptr || !technique->IsValid())

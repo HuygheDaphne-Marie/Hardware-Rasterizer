@@ -11,9 +11,6 @@
     <Filter Include="Helpers">
       <UniqueIdentifier>{72056cb6-72a2-42b7-b05e-376f1ddd957e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Shaders">
-      <UniqueIdentifier>{524d738d-64d1-4bb1-b418-17067d1bc1c0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Geometry">
       <UniqueIdentifier>{c4876ad9-d7e6-4637-9f87-2a91b75ae1d3}</UniqueIdentifier>
     </Filter>
@@ -28,6 +25,9 @@
     </Filter>
     <Filter Include="Parsing">
       <UniqueIdentifier>{d7ef0dc4-cd8f-4deb-803f-c059d0c6221b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Effect/Material">
+      <UniqueIdentifier>{524d738d-64d1-4bb1-b418-17067d1bc1c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -83,8 +83,8 @@
       <Filter>Helpers</Filter>
     </ClInclude>
     <ClInclude Include="pch.h" />
-    <ClInclude Include="Effect.h">
-      <Filter>Shaders</Filter>
+    <ClInclude Include="Material.h">
+      <Filter>Effect/Material</Filter>
     </ClInclude>
     <ClInclude Include="Vertex.h">
       <Filter>Geometry</Filter>
@@ -110,6 +110,9 @@
     <ClInclude Include="EOBJParser.h">
       <Filter>Parsing</Filter>
     </ClInclude>
+    <ClInclude Include="BaseMaterial.h">
+      <Filter>Effect/Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ERenderer.cpp">
@@ -120,8 +123,8 @@
       <Filter>Helpers</Filter>
     </ClCompile>
     <ClCompile Include="pch.cpp" />
-    <ClCompile Include="Effect.cpp">
-      <Filter>Shaders</Filter>
+    <ClCompile Include="Material.cpp">
+      <Filter>Effect/Material</Filter>
     </ClCompile>
     <ClCompile Include="Mesh.cpp">
       <Filter>Geometry</Filter>
@@ -137,6 +140,9 @@
     </ClCompile>
     <ClCompile Include="Texture.cpp">
       <Filter>Textures</Filter>
+    </ClCompile>
+    <ClCompile Include="BaseMaterial.cpp">
+      <Filter>Effect/Material</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

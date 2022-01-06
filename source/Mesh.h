@@ -1,7 +1,7 @@
 #pragma once
 #include <vector>
 #include "Vertex.h"
-#include "Effect.h"
+#include "Material.h"
 #include "ECamera.h"
 #include "Texture.h"
 
@@ -23,10 +23,10 @@ public:
 	void SetSpecularMap(Texture* pSpecularMap);
 	void SetGlossinessMap(Texture* pGlossinessMap);
 
-	Effect& GetEffect();
+	Material& GetEffect();
 
 private:
-	Effect m_Effect;
+	Material m_Effect;
 
 	ID3D11Buffer* m_pVertexBuffer;
 	ID3D11InputLayout* m_pVertexLayout;

@@ -1,15 +1,15 @@
 #pragma once
 #include <vector>
 
-class Effect
+class Material
 {
 public:
-	Effect(ID3D11Device* pDevice, const std::wstring& path);
-	Effect(Effect& other) = delete;
-	Effect(Effect&& other) = delete;
-	Effect operator=(Effect& other) = delete;
-	Effect operator=(Effect&& other) = delete;
-	~Effect();
+	Material(ID3D11Device* pDevice, const std::wstring& path);
+	Material(Material& other) = delete;
+	Material(Material&& other) = delete;
+	Material operator=(Material& other) = delete;
+	Material operator=(Material&& other) = delete;
+	~Material();
 
 	ID3DX11Effect* GetEffect() const;
 	ID3DX11EffectTechnique* GetTechnique() const;

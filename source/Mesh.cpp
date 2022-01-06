@@ -94,6 +94,7 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext, Elite::Camera* pCamera)
 	// Set primitive topology
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
+	// Todo: move all this shader stuff to the Material/Material Update (for the vehicle specifically)
 
 	// Set Matrices
 	SetEffectMatrix("gWorldViewProj", m_pWorldViewProjVariable, pCamera->GetProjection() * pCamera->GetWorldToView());
@@ -138,7 +139,7 @@ void Mesh::SetGlossinessMap(Texture* pGlossinessMap)
 	m_pGlossinessMap = pGlossinessMap;
 }
 
-Effect& Mesh::GetEffect()
+Material& Mesh::GetEffect()
 {
 	return m_Effect;
 }
