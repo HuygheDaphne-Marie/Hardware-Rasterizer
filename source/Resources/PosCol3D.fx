@@ -19,6 +19,41 @@ RasterizerState gRasterizerState
 	FrontCounterClockwise = true;
 };
 
+BlendState gBlendState
+{
+    BlendEnable[0] = true;
+    SrcBlend = src_alpha;
+    DestBlend = inv_src_alpha;
+    BlendOp = add;
+    SrcBlendAlpha = zero;
+    DestBlendAlpha = zero;
+    BlendOpAlpha = add;
+    RenderTargetWriteMask[0] = 0x0F;
+};
+
+DepthStencilState gDepthStencilState
+{
+    DepthEnable = true;
+    DepthWriteMask = true;
+    DepthFunc = less;
+    StencilEnable = false;
+
+    StencilReadMask = 0x0F;
+    StencilWriteMask = 0x0F;
+
+    FrontFaceStencilFunc = always;
+    BackFaceStencilFunc = always;
+
+    FrontFaceStencilDepthFail = keep;
+    BackFaceStencilDepthFail = keep;
+
+    FrontFaceStencilPass = keep;
+    BackFaceStencilPass = keep;
+
+    FrontFaceStencilFail = keep;
+    BackFaceStencilFail = keep;
+};
+
 
 // ===== ===== Sample States ===== =====
 
@@ -132,6 +167,8 @@ technique11 DefaultTechnique
 	pass P0
 	{
 		SetRasterizerState(gRasterizerState);
+		SetDepthStencilState(gDepthStencilState, 0);
+        SetBlendState(gBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_POINT()));
@@ -143,6 +180,8 @@ technique11 LinearTechnique
 	pass P0
 	{
 		SetRasterizerState(gRasterizerState);
+		SetDepthStencilState(gDepthStencilState, 0);
+        SetBlendState(gBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_LINEAR()));
@@ -154,6 +193,8 @@ technique11 AnisotropicTechnique
 	pass P0
 	{
 		SetRasterizerState(gRasterizerState);
+		SetDepthStencilState(gDepthStencilState, 0);
+        SetBlendState(gBlendState, float4(0.f, 0.f, 0.f, 0.f), 0xFFFFFFFF);
 		SetVertexShader(CompileShader(vs_5_0, VS()));
 		SetGeometryShader(NULL);
 		SetPixelShader(CompileShader(ps_5_0, PS_ANISOTROPIC()));

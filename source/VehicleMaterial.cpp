@@ -1,14 +1,22 @@
 #include "pch.h"
 #include "VehicleMaterial.h"
-
-#include <sstream>
-
 #include "SceneManager.h"
 
 VehicleMaterial::VehicleMaterial(ID3D11Device* pDevice, const std::wstring& path) // Todo: needs to set material specific variables
 	: Material(pDevice, path)
+	, m_pWorldMatrixVariable(nullptr)
+	, m_pViewInverseMatrixVariable(nullptr)
+	, m_pDiffuseMapVariable(nullptr)
+	, m_pNormalMapVariable(nullptr)
+	, m_pSpecularMapVariable(nullptr)
+	, m_pGlossinessMapVariable(nullptr)
+	, m_pDiffuse(nullptr)
+	, m_pNormalMap(nullptr)
+	, m_pSpecularMap(nullptr)
+	, m_pGlossinessMap(nullptr)
 {
 }
+
 VehicleMaterial::~VehicleMaterial()
 {
 	// Todo: textureManager, if need be

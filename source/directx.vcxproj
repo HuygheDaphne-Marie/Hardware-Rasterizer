@@ -76,6 +76,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ExhaustMaterial.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="ECamera.h" />
     <ClInclude Include="VehicleMaterial.h" />
@@ -106,6 +107,7 @@
     <ClInclude Include="Vertex.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ExhaustMaterial.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="ECamera.cpp" />
     <ClCompile Include="VehicleMaterial.cpp" />

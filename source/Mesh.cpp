@@ -2,8 +2,8 @@
 #include "Mesh.h"
 #include "SceneManager.h"
 
-Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const std::vector<unsigned int>& indices, const std::wstring& effectPath)
-	: m_Effect(pDevice, effectPath)
+Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const std::vector<unsigned int>& indices, Material* pMaterial)
+	: m_pMaterial(pMaterial)
 {	
 	// Create vertex layout
 	HRESULT result = S_OK;
@@ -47,7 +47,7 @@ Mesh::Mesh(ID3D11Device* pDevice, const std::vector<IVertex>& vertices, const st
 
 	// Create input layout
 	D3DX11_PASS_DESC passDesc{};
-	m_Effect.GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
+	m_pMaterial->GetTechnique()->GetPassByIndex(0)->GetDesc(&passDesc);
 	result = pDevice->CreateInputLayout(vertexDesc, numElements, passDesc.pIAInputSignature, passDesc.IAInputSignatureSize, &m_pVertexLayout);
 	if (FAILED(result))
 		return;
@@ -72,6 +72,7 @@ Mesh::~Mesh()
 	m_pIndexBuffer->Release();
 	m_pVertexLayout->Release();
 	m_pVertexBuffer->Release();
+	delete m_pMaterial;
 }
 
 void Mesh::Render(ID3D11DeviceContext* pDeviceContext)
@@ -91,19 +92,19 @@ void Mesh::Render(ID3D11DeviceContext* pDeviceContext)
 	pDeviceContext->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
 
 	// Update Effect (Sets shader variables)
-	m_Effect.Update();
+	m_pMaterial->Update();
 
 	// Render a triangle
 	D3DX11_TECHNIQUE_DESC techDesc{}; // Todo: edited this
-	m_Effect.GetTechnique()->GetDesc(&techDesc);
+	m_pMaterial->GetTechnique()->GetDesc(&techDesc);
 	for (UINT passIndex = 0; passIndex < techDesc.Passes; ++passIndex)
 	{
-		m_Effect.GetTechnique()->GetPassByIndex(0)->Apply(0, pDeviceContext);
+		m_pMaterial->GetTechnique()->GetPassByIndex(0)->Apply(0, pDeviceContext);
 		pDeviceContext->DrawIndexed(m_AmountIndices, 0, 0);
 	}
 }
 
-VehicleMaterial& Mesh::GetEffect()
+Material* Mesh::GetMaterial()
 {
-	return m_Effect;
+	return m_pMaterial;
 }

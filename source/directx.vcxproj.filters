@@ -113,6 +113,9 @@
     <ClInclude Include="Material.h">
       <Filter>Effect/Material</Filter>
     </ClInclude>
+    <ClInclude Include="ExhaustMaterial.h">
+      <Filter>Effect/Material</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ERenderer.cpp">
@@ -142,6 +145,9 @@
       <Filter>Textures</Filter>
     </ClCompile>
     <ClCompile Include="Material.cpp">
+      <Filter>Effect/Material</Filter>
+    </ClCompile>
+    <ClCompile Include="ExhaustMaterial.cpp">
       <Filter>Effect/Material</Filter>
     </ClCompile>
   </ItemGroup>

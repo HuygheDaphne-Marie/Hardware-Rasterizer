@@ -14,6 +14,7 @@
 #include "EOBJParser.h"
 
 #include "VehicleMaterial.h"
+#include "ExhaustMaterial.h"
 
 using namespace Elite;
 
@@ -65,17 +66,35 @@ int main(int argc, char* args[])
 		//pQuad->SetDiffuseTexture(new Texture("Resources/uv_grid_2.png", pRenderer->GetDevice()));
 		//activeScene.AddGeometryToScene(pQuad);
 
-		std::vector<IVertex> verticesFromFile{};
-		std::vector<uint32_t> indices{};
-		ParseOBJ("Resources/vehicle.obj", verticesFromFile, indices);
+		{
+			std::vector<IVertex> verticesFromFile{};
+			std::vector<uint32_t> indices{};
+			ParseOBJ("Resources/vehicle.obj", verticesFromFile, indices);
 
-		Mesh* pMesh = new Mesh(pRenderer->GetDevice(), verticesFromFile, indices, L"Resources/PosCol3D.fx");
-		VehicleMaterial& vehicleMaterial{ pMesh->GetEffect() };
-		vehicleMaterial.SetDiffuseTexture(new Texture("Resources/vehicle_diffuse.png", pRenderer->GetDevice()));
-		vehicleMaterial.SetNormalMap(new Texture("Resources/vehicle_normal.png", pRenderer->GetDevice()));
-		vehicleMaterial.SetSpecularMap(new Texture("Resources/vehicle_specular.png", pRenderer->GetDevice()));
-		vehicleMaterial.SetGlossinessMap(new Texture("Resources/vehicle_gloss.png", pRenderer->GetDevice()));
-		activeScene.AddGeometryToScene(pMesh);
+			VehicleMaterial* pVehicleMaterial{ new VehicleMaterial(pRenderer->GetDevice(), L"Resources/PosCol3D.fx") };
+			pVehicleMaterial->SetDiffuseTexture(new Texture("Resources/vehicle_diffuse.png", pRenderer->GetDevice()));
+			pVehicleMaterial->SetNormalMap(new Texture("Resources/vehicle_normal.png", pRenderer->GetDevice()));
+			pVehicleMaterial->SetSpecularMap(new Texture("Resources/vehicle_specular.png", pRenderer->GetDevice()));
+			pVehicleMaterial->SetGlossinessMap(new Texture("Resources/vehicle_gloss.png", pRenderer->GetDevice()));
+
+			Mesh* pMesh = new Mesh(pRenderer->GetDevice(), verticesFromFile, indices, pVehicleMaterial);
+			activeScene.AddGeometryToScene(pMesh);
+		}
+
+		{
+			std::vector<IVertex> verticesFromFile{};
+			std::vector<uint32_t> indices{};
+			ParseOBJ("Resources/fireFX.obj", verticesFromFile, indices);
+
+			ExhaustMaterial* pExhaustMaterial
+			{
+				new ExhaustMaterial (pRenderer->GetDevice(), L"Resources/Exhaust.fx", 
+					new Texture("Resources/fireFX_diffuse.png", pRenderer->GetDevice()))
+			};
+
+			Mesh* pMesh = new Mesh(pRenderer->GetDevice(), verticesFromFile, indices, pExhaustMaterial);
+			activeScene.AddGeometryToScene(pMesh);
+		}
 	}
 	
 	//Start loop
@@ -99,7 +118,7 @@ int main(int argc, char* args[])
 				{
 					for (auto* pMesh : activeScene.GetGeometries())
 					{
-						pMesh->GetEffect().GotoNextTechnique();
+						pMesh->GetMaterial()->GotoNextTechnique();
 					}
 				}
 				break;
